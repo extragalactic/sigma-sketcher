@@ -1,0 +1,23 @@
+<!-- navigation bar -->
+<section>
+   <nav class="navbar navbar-inverse navbar-fluid-top navbar-custom">
+      <div class="container-fluid">
+         <div class="navbar-header">
+            <button id="menuCollapseButton" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigationBar" aria-expanded="false" aria-controls="navbar">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+               <img style="margin-top:-5px;" src="images/sigma-1 banner.jpg" width=160px>
+            </a>
+         </div>
+         <div id="navigationBar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+               <li ng-class="{ active: isActive('/list') }" class="nav-item active"><a class="nav-link" data-toggle="tab" href="#/list">Drawing</a></li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+</section>

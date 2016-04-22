@@ -1,0 +1,7 @@
+node_modules/
+public/images/
+.DS_Store
+.tmp
+.git
+sigma-sketcher.git
+npm-debug.log
