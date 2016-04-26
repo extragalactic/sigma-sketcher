@@ -78,6 +78,12 @@ div label {
   width: 100%;
   height: 100%; }
 
+#mainTitle {
+  float: left; }
+
+#controlsBar {
+  float: right; }
+
 .main {
   margin-top: -30px;
   padding-right: 20px;

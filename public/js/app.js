@@ -5,11 +5,6 @@
 global.jQuery = $ = require('jquery');
 require("angular-ui-bootstrap");
 
-//var users = require('./galaxyInfo');
-//var fs = require('browserify-fs');
-//var path = require('path');
-//var http = require('http');
-
 // create main Angular module
 var myApp = angular.module('myApp', [
   'ngRoute',

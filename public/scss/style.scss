@@ -1,4 +1,5 @@
 
+// define site colours
 $primaryColorLight: #ba6fe8;
 $primaryColorMedium: #7d3ca3;
 $primaryColorDark: #3c1c4e;
@@ -8,6 +9,7 @@ $textColorDark: #777;
 $backgroundColorLight: #444;
 $backgroundColorMedium: #222;
 $backgroundColorDark: #111;
+
 
 * {
     margin: 0;
@@ -100,6 +102,13 @@ div {
     background-color: white;
     width: 100%;
     height: 100%;
+}
+
+#mainTitle {
+    float: left;
+}
+#controlsBar {
+    float: right;
 }
 
 .main {

@@ -1,7 +1,7 @@
 var socketio = require('socket.io-client');
 
 angular.module('myApp').factory('socket', function ($rootScope) {
-   var socketPath = "http://" + SKETCH_SERVER_IP + ":3200";
+   var socketPath = "http://" + SKETCH_SERVER_IP + ":" + SKETCH_SERVER_PORT;
    console.log('creating socket connection: ' + socketPath);
    var socket = socketio.connect(socketPath);
 

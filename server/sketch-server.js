@@ -1,5 +1,5 @@
 // ==========================================================
-// Sigma Sketcher node.js server
+// Sigma-1 Sketcher Node.js server
 // ==========================================================
 
 (function() {
@@ -9,7 +9,8 @@
 var express = require("express");
 var http = require("http");
 var app = express();
-var server = http.createServer(app).listen(3200);
+var settings = require("./../public/serverIP");
+var server = http.createServer(app).listen(settings.SKETCH_SERVER_PORT);
 var io = require("socket.io")(server);
 var fs = require("fs");
 var osc = require('node-osc');
@@ -20,7 +21,7 @@ var drawHistory = [];
 var oscServer, oscClient;
 
 // set root folder for Express web server
-app.use(express.static("./public"));
+app.use(express.static("./../public"));
 
 // define handlers for all incoming messages
 io.on("connection", function(socket) {
@@ -66,10 +67,14 @@ io.on("connection", function(socket) {
 
     socket.on('drawElement', function (data) {
       drawHistory.push(data.line);
-      console.log(drawHistory.length);
+      //console.log(drawHistory.length);
       io.emit('drawElement', { line: data.line });
    });
 
+   socket.on('refreshPage', function () {
+      drawHistory = [];
+      io.emit('refreshPage');
+   });
 
     // ----------------------------------------------------
     socket.on("getUserList", function() {

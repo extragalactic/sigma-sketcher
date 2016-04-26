@@ -24430,11 +24430,6 @@ function toArray(list, index) {
 global.jQuery = $ = require('jquery');
 require("angular-ui-bootstrap");
 
-//var users = require('./galaxyInfo');
-//var fs = require('browserify-fs');
-//var path = require('path');
-//var http = require('http');
-
 // create main Angular module
 var myApp = angular.module('myApp', [
   'ngRoute',
@@ -24531,20 +24526,19 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     stage.on("stagemousedown", function(event) {
         // A mouse press happened.
         // Listen for mouse move while the mouse is down:
-        console.log('mouse down');
+        //console.log('mouse down');
         //event.addEventListener("stagemousemove", handleMove);
     });
     stage.on("stagemouseup", function(event) {
         // A mouse press happened.
         // Listen for mouse move while the mouse is down:
-        console.log('mouse up');
+        //console.log('mouse up');
       //   event.addEventListener("stagemousemove", handleMove);
     });
 
 
     function handleMove(event) {
-        // Check out the DragAndDrop example in GitHub for more
-        console.log('mouse move');
+        //console.log('mouse move');
     }
 
     canvas.onmousedown = function(e){
@@ -24600,7 +24594,7 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     var height  = canvas.height;
     var lineData = data.line;
     var line = new createjs.Shape();
-    
+
     line.graphics.setStrokeStyle(3);
     line.graphics.beginStroke("#000");
     line.graphics.moveTo(lineData[0].x * width, lineData[0].y * height);
@@ -24609,6 +24603,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     stage.addChild(line);
     stage.update();
 
+  });
+
+  socket.on("refreshPage", function () {
+    stage.removeAllChildren();
+    stage.update();
   });
 
   socket.on("messageOSC", function (message) {
@@ -24646,13 +24645,12 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   // ---------------------------------------------------
   // listen for messages from view
 
-/* e.g.
-
-  $scope.changeListStyle = function () {
-    // do something when user modifies view widget
+  // send message to server to clear the drawing canvas
+  $scope.refreshPage = function () {
+    socket.emit('refreshPage');
   };
 
-*/
+
 
 }]);
 
@@ -24672,7 +24670,7 @@ angular.module('myApp').controller('HeaderController', ['$scope', '$http', funct
 var socketio = require('socket.io-client');
 
 angular.module('myApp').factory('socket', function ($rootScope) {
-   var socketPath = "http://" + SKETCH_SERVER_IP + ":3200";
+   var socketPath = "http://" + SKETCH_SERVER_IP + ":" + SKETCH_SERVER_PORT;
    console.log('creating socket connection: ' + socketPath);
    var socket = socketio.connect(socketPath);
 
