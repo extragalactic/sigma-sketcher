@@ -34,12 +34,13 @@ io.on("connection", function(socket) {
          oscServer = new osc.Server(obj.server.port, obj.server.host);
          oscClient = new osc.Client(obj.client.host, obj.client.port);
          //  oscClient.send('/status', socket.sessionId + ' connected');
+
+         oscServer.on('message', function(msg, rinfo) {
+           var OSCmsg = msg[2][0]; // trim the data out of the message
+           console.log('OSC server received message: ' + OSCmsg);
+           io.emit("messageOSC", OSCmsg);
+         });
       }
-      oscServer.on('message', function(msg, rinfo) {
-        var OSCmsg = msg[2][0]; // trim the data out of the message
-        console.log('OSC server received message: ' + OSCmsg);
-        io.emit("messageOSC", OSCmsg);
-      });
     });
 
     // ----------------------------------------------------
@@ -66,13 +67,12 @@ io.on("connection", function(socket) {
     });
 
     socket.on('drawElement', function (data) {
-      drawHistory.push(data.line);
-      //console.log(drawHistory.length);
-      io.emit('drawElement', { line: data.line });
+      drawHistory.push(data);
+      io.emit('drawElement', data);
    });
 
    socket.on('refreshPage', function () {
-      drawHistory = [];
+      drawHistory.length = 0;
       io.emit('refreshPage');
    });
 
@@ -107,7 +107,7 @@ io.on("connection", function(socket) {
 // ----------------------------------------------------
 function initNewClient(socket) {
    for (var i in drawHistory) {
-      socket.emit('drawElement', { line: drawHistory[i] } );
+      socket.emit('drawElement', drawHistory[i] );
    }
 }
 

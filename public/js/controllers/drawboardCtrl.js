@@ -14,6 +14,7 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   var canvas = document.getElementById('drawCanvas');
   var ctx = canvas.getContext('2d');
   var stage = new createjs.Stage("drawCanvas");
+  var selectedColour = "#000";
 
   var mouse = {
      click: false,
@@ -32,13 +33,15 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     var width   = window.innerWidth;
     var height  = window.innerHeight;
 
+/*
+    // draw a circle
     var circle = new createjs.Shape();
     circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
     circle.x = 100;
     circle.y = 100;
     stage.addChild(circle);
     stage.update();
-
+*/
 
     stage.on("stagemousedown", function(event) {
         // A mouse press happened.
@@ -82,6 +85,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
       };
   }
 
+  $scope.$on('newSelectedColour', function (event, newColour) {
+    selectedColour = newColour;
+    console.debug(newColour);
+  });
+
   // remove socket listeners when leaving page
   $scope.$on('$destroy', function (event) {
     socket.removeAllListeners();
@@ -110,10 +118,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     var width   = canvas.width;
     var height  = canvas.height;
     var lineData = data.line;
+    var colourData = data.colour;
     var line = new createjs.Shape();
 
     line.graphics.setStrokeStyle(3);
-    line.graphics.beginStroke("#000");
+    line.graphics.beginStroke(colourData);
     line.graphics.moveTo(lineData[0].x * width, lineData[0].y * height);
     line.graphics.lineTo(lineData[1].x * width, lineData[1].y * height);
     line.graphics.endStroke();
@@ -123,6 +132,7 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   });
 
   socket.on("refreshPage", function () {
+    console.log('refreshing page');
     stage.removeAllChildren();
     stage.update();
   });
@@ -143,21 +153,17 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   };
 
   // ---------------------------------------------------
+  // This runs every 50ms or so...
+  //
   function mainLoop () {
      if (mouse.click && mouse.move && mouse.pos_prev) {
         var linePoints = [ mouse.pos, mouse.pos_prev ];
-        socket.emit('drawElement', { line: linePoints });
+        socket.emit('drawElement', { line: linePoints, colour: selectedColour });
         mouse.move = false;
      }
      mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-     setTimeout(mainLoop, 25);
+     setTimeout(mainLoop, 50);
   }
-
-  // begin
-  $scope.initCanvas();
-  mainLoop();
-
-
 
   // ---------------------------------------------------
   // listen for messages from view
@@ -167,6 +173,10 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     socket.emit('refreshPage');
   };
 
+
+  // begin
+  $scope.initCanvas();
+  mainLoop();
 
 
 }]);

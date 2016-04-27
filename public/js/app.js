@@ -9,7 +9,8 @@ require("angular-ui-bootstrap");
 var myApp = angular.module('myApp', [
   'ngRoute',
   'ui.bootstrap',
-  'ngAnimate'
+  'ngAnimate',
+  'ngColorPicker'
 ])
 // run initialization procedures
 .run(['socket', function(socket) {

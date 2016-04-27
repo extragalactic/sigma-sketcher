@@ -13,7 +13,8 @@ var jsSources = [
   'public/js/controllers/drawboardCtrl.js',
   'public/js/controllers/headerCtrl.js',
   'public/js/services/socketFactory.js',
-  'public/js/directives/onSizeChanged.js'
+  'public/js/directives/onSizeChanged.js',
+  'public/lib/ng-color-picker/color-picker.js'
 ];
 var htmlSources = [
   'public/*.html'
