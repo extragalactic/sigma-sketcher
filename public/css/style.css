@@ -74,19 +74,22 @@ div label {
 
 #drawCanvas {
   display: block;
-  background-color: white;
+  background-color: black;
   width: 100%;
-  height: 100%; }
-
-#mainTitle {
-  float: left; }
+  height: 100%;
+  border: solid #3c1c4e 3px;
+  border-radius: 12px; }
 
 #controlsBar {
   float: right; }
 
 .colorPicker {
   float: left;
-  padding: 20px; }
+  padding: 5px 8px;
+  margin: 13px;
+  border: solid #444 2px;
+  border-radius: 6px;
+  background-color: white; }
 
 .cornerButtons {
   padding-top: 25px;
@@ -96,6 +99,9 @@ div label {
   margin-top: -30px;
   padding-right: 20px;
   padding-left: 7px; }
+
+.mainTitle {
+  float: left; }
 
 .btn-link {
   color: #ba6fe8;

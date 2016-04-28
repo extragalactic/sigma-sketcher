@@ -24455,6 +24455,10 @@ var myApp = angular.module('myApp', [
     templateUrl: 'partials/drawboard.html',
     controller: 'DrawboardController'
   }).
+  when('/gradients', {
+    templateUrl: 'partials/gradients.html',
+    controller: 'GradientsController'
+  }).
   otherwise({
     redirectTo: '/draw'
   });
@@ -24483,22 +24487,19 @@ $(document).on('click', '#menuCollapseButton', function (e) {
 });
 
 // ----------------------------------------------------
-//  ListController
+//  Drawboard Controller
 // ----------------------------------------------------
 
-global.jQuery = $ = require('jquery');
-
-// ListController
-angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 'socket', 'appVars', function ($scope, $http, socket, appVars) {
-
-  this.socket = socket;
-  this.appVars = appVars;
+// Drawboard Controller
+angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 'socket', 'appVars', 'AssetLibrary', function ($scope, $http, socket, appVars, AssetLibrary) {
+  "use strict";
 
   // get the canvas object and the drawing context object
   var canvas = document.getElementById('drawCanvas');
   var ctx = canvas.getContext('2d');
   var stage = new createjs.Stage("drawCanvas");
-  var selectedColour = "#000";
+  var selectedColour = "#fff";
+  var brushIndex = 5;
 
   var mouse = {
      click: false,
@@ -24508,24 +24509,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   };
 
   $scope.initCanvas = function() {
-    //canvas.width = window.innerWidth;
-    //canvas.height = window.innerHeight;
     canvas.width = 800;
     canvas.height = 600;
 
-
     var width   = window.innerWidth;
     var height  = window.innerHeight;
-
-/*
-    // draw a circle
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-    circle.x = 100;
-    circle.y = 100;
-    stage.addChild(circle);
-    stage.update();
-*/
 
     stage.on("stagemousedown", function(event) {
         // A mouse press happened.
@@ -24559,22 +24547,25 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
       mouse.pos.y = getMousePos(canvas, e).y / windowHeight;
       mouse.move = true;
     };
+
+     // get current drawings from server
+     socket.emit("requestDrawHistory");
   };
 
   function getMousePos(canvasObj, evt) {
-      var rect = canvasObj.getBoundingClientRect();
-      return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-      };
+    var rect = canvasObj.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
   }
 
+  // listen for global messages
   $scope.$on('newSelectedColour', function (event, newColour) {
     selectedColour = newColour;
-    console.debug(newColour);
   });
 
-  // remove socket listeners when leaving page
+  // remove socket listeners when leaving page (called automatically)
   $scope.$on('$destroy', function (event) {
     socket.removeAllListeners();
   });
@@ -24597,8 +24588,6 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   });
 
   socket.on('drawElement', function (data) {
-    //var width   = window.innerWidth;
-    //var height  = window.innerHeight;
     var width   = canvas.width;
     var height  = canvas.height;
     var lineData = data.line;
@@ -24611,6 +24600,24 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     line.graphics.lineTo(lineData[1].x * width, lineData[1].y * height);
     line.graphics.endStroke();
     stage.addChild(line);
+
+    var brushName = 'brush' + brushIndex;
+    var brushStamp = new createjs.Bitmap(AssetLibrary.getBrush(brushName));
+
+    brushIndex++;
+    if(brushIndex > 8) brushIndex = 5;
+
+    brushStamp.set({
+      x: lineData[1].x * width,
+      y: lineData[1].y * height,
+      scaleX: 0.4,
+      scaleY: 0.4,
+      regX: brushStamp.getBounds().width/2,
+      regY: brushStamp.getBounds().height/2
+    });
+
+    stage.addChild(brushStamp);
+
     stage.update();
 
   });
@@ -24626,6 +24633,7 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   });
 
 
+  // not being used...
   $scope.resizeMe = function () {
     var canvas = document.getElementById('drawCanvas');
     //canvas.width = window.innerWidth;
@@ -24657,10 +24665,12 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     socket.emit('refreshPage');
   };
 
-
-  // begin
-  $scope.initCanvas();
-  mainLoop();
+  // *********** begins here ***********
+  AssetLibrary.loadAllAssets(function() {
+    // start the page after all assets have been loaded
+    $scope.initCanvas();
+    mainLoop();
+  });
 
 
 }]);
@@ -24676,6 +24686,23 @@ angular.module('myApp').controller('HeaderController', ['$scope', '$http', funct
     var active = (viewLocation === $location.path());
     return active;
   };
+}]);
+
+// ----------------------------------------------------
+//  GradientstController
+// ----------------------------------------------------
+
+global.jQuery = $ = require('jquery');
+
+// GradientsController
+angular.module('myApp').controller('GradientsController', ['$scope', '$http', 'socket', 'appVars', function ($scope, $http, socket, appVars) {
+  "use strict";
+  this.socket = socket;
+  this.appVars = appVars;
+
+
+
+
 }]);
 
 var socketio = require('socket.io-client');
@@ -24701,6 +24728,40 @@ angular.module('myApp').factory('socket', function ($rootScope) {
        socket.removeAllListeners();
      },
      id: socket.id
+  };
+});
+
+// AssetLibrary loads and contains all external assets (images, etc.)
+angular.module('myApp').factory('AssetLibrary', function () {
+  "use strict";
+  
+  var manifest = "data/brushesManifest.json";
+
+  var loadCompleteCallback;
+
+  // Create a LoadQueue instance
+  var loadQueue = new createjs.LoadQueue();
+
+  // Listener to the Complete event (when all images are loaded)
+  loadQueue.addEventListener("complete", function() {
+    // start the page after all assets have been loaded
+    loadCompleteCallback();
+  });
+
+  loadQueue.addEventListener("error", function() {
+    console.debug('error loading files');
+    return false;
+  });
+
+  return {
+    loadAllAssets: function (callback) {
+      // Start loading assets
+      loadCompleteCallback = callback;
+      loadQueue.loadManifest({src: manifest, type: "manifest"});
+    },
+    getBrush: function (brushName) {
+      return loadQueue.getResult(brushName);
+    }
   };
 });
 
@@ -24741,7 +24802,6 @@ angular.module('ngColorPicker', [])
     var defaultColors =  [
         '#7bd148',
         '#5484ed',
-        '#a4bdfc',
         '#46d6db',
         '#7ae7bf',
         '#51b749',
@@ -24750,6 +24810,7 @@ angular.module('ngColorPicker', [])
         '#ff887c',
         '#dc2127',
         '#dbadff',
+        '#000000',
         '#e1e1e1'
     ];
     this.setTemplateUrl = function(url){
@@ -24782,6 +24843,7 @@ angular.module('ngColorPicker', [])
 
             scope.pick = function (color) {
                 scope.selected = color;
+                // broadcast global message with new selected colour
                 $rootScope.$broadcast('newSelectedColour', scope.selected);
             };
 

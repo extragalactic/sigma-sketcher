@@ -12,7 +12,9 @@ var jsSources = [
   'public/js/app.js',
   'public/js/controllers/drawboardCtrl.js',
   'public/js/controllers/headerCtrl.js',
+  'public/js/controllers/gradientsCtrl.js',
   'public/js/services/socketFactory.js',
+  'public/js/services/assetLibrary.js',  
   'public/js/directives/onSizeChanged.js',
   'public/lib/ng-color-picker/color-picker.js'
 ];

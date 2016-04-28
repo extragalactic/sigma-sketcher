@@ -5,7 +5,6 @@ angular.module('ngColorPicker', [])
     var defaultColors =  [
         '#7bd148',
         '#5484ed',
-        '#a4bdfc',
         '#46d6db',
         '#7ae7bf',
         '#51b749',
@@ -14,6 +13,7 @@ angular.module('ngColorPicker', [])
         '#ff887c',
         '#dc2127',
         '#dbadff',
+        '#000000',
         '#e1e1e1'
     ];
     this.setTemplateUrl = function(url){
@@ -46,6 +46,7 @@ angular.module('ngColorPicker', [])
 
             scope.pick = function (color) {
                 scope.selected = color;
+                // broadcast global message with new selected colour
                 $rootScope.$broadcast('newSelectedColour', scope.selected);
             };
 

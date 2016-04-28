@@ -58,7 +58,7 @@ io.on("connection", function(socket) {
 
       console.log('User Login, # users: ' + userList.length);
 
-      initNewClient(socket);
+      //initNewClient(socket);
 
       //var loginMessage = userData.id + ' has logged in';
       //socket.broadcast.emit("message", loginMessage);
@@ -69,12 +69,18 @@ io.on("connection", function(socket) {
     socket.on('drawElement', function (data) {
       drawHistory.push(data);
       io.emit('drawElement', data);
-   });
+    });
 
-   socket.on('refreshPage', function () {
+    socket.on('refreshPage', function () {
       drawHistory.length = 0;
       io.emit('refreshPage');
-   });
+    });
+
+    socket.on("requestDrawHistory", function() {
+      for (var i in drawHistory) {
+         socket.emit('drawElement', drawHistory[i] );
+      }
+    });
 
     // ----------------------------------------------------
     socket.on("getUserList", function() {

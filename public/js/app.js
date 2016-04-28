@@ -30,6 +30,10 @@ var myApp = angular.module('myApp', [
     templateUrl: 'partials/drawboard.html',
     controller: 'DrawboardController'
   }).
+  when('/gradients', {
+    templateUrl: 'partials/gradients.html',
+    controller: 'GradientsController'
+  }).
   otherwise({
     redirectTo: '/draw'
   });
