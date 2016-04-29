@@ -1,30 +1,35 @@
 // AssetLibrary loads and contains all external assets (images, etc.)
 angular.module('myApp').factory('AssetLibrary', function () {
   "use strict";
-  
-  var manifest = "data/brushesManifest.json";
 
-  var loadCompleteCallback;
+  var loadCompleteCallback = null;
+  var manifest = "data/brushesManifest.json";
+  console.debug('init asset library');
 
   // Create a LoadQueue instance
   var loadQueue = new createjs.LoadQueue();
 
-  // Listener to the Complete event (when all images are loaded)
+  // Listener to the Complete event (when all files are loaded)
   loadQueue.addEventListener("complete", function() {
-    // start the page after all assets have been loaded
+    // send completion message after all assets have been loaded
     loadCompleteCallback();
   });
 
   loadQueue.addEventListener("error", function() {
-    console.debug('error loading files');
+    console.warning('error loading files');
     return false;
   });
 
   return {
     loadAllAssets: function (callback) {
-      // Start loading assets
       loadCompleteCallback = callback;
-      loadQueue.loadManifest({src: manifest, type: "manifest"});
+      if(true) {
+        // start loading assets
+        loadQueue.loadManifest({src: manifest, type: "manifest"});
+      } else {
+        // assets already loaded so return
+        loadCompleteCallback();
+      }
     },
     getBrush: function (brushName) {
       return loadQueue.getResult(brushName);

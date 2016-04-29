@@ -8,6 +8,19 @@
             <div id="controlsBar">
                <ng-color-picker class="colorPicker" selected='selected'></ng-color-picker>
                <div class="cornerButtons">
+                  <label>Theme:
+                     <select ng-model="themeType" ng-change="changeThemeType()">
+                        <option value="light">light</option>
+                        <option value="dark">dark</option>
+                     </select>
+                  </label>
+                  <label>Brush:
+                     <select ng-model="brushType" ng-change="changeBrushType()">
+                        <option value="metabrushLines">lines</option>
+                        <option value="metabrushGalactic">galaxies</option>
+                        <option value="metabrushGeo">geometry</option>
+                     </select>
+                  </label>
                   <button class="btn" ng-click="refreshPage()">Refresh</button>
                </div>
             </div>

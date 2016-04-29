@@ -18,9 +18,13 @@ var myApp = angular.module('myApp', [
 }])
 // set application 'globals'
 .value('appVars', {
-  testvars: {
-    foo: 'monkey',
-    bar: 'nuts'
+  config: {
+    themeType: 'dark',
+    brushType: 'metabrushLines'
+  },
+  themes: {
+    'light': {backgroundColour: '#fff'},
+    'dark': {backgroundColour: '#000'}
   }
 })
 .config(['$routeProvider', function ($routeProvider) {

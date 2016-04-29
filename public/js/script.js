@@ -24443,9 +24443,13 @@ var myApp = angular.module('myApp', [
 }])
 // set application 'globals'
 .value('appVars', {
-  testvars: {
-    foo: 'monkey',
-    bar: 'nuts'
+  config: {
+    themeType: 'dark',
+    brushType: 'metabrushLines'
+  },
+  themes: {
+    'light': {backgroundColour: '#fff'},
+    'dark': {backgroundColour: '#000'}
   }
 })
 .config(['$routeProvider', function ($routeProvider) {
@@ -24494,12 +24498,20 @@ $(document).on('click', '#menuCollapseButton', function (e) {
 angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 'socket', 'appVars', 'AssetLibrary', function ($scope, $http, socket, appVars, AssetLibrary) {
   "use strict";
 
+  $scope.themeType = appVars.config.themeType;
+  $scope.brushType = "metabrushLines";
+
   // get the canvas object and the drawing context object
   var canvas = document.getElementById('drawCanvas');
   var ctx = canvas.getContext('2d');
   var stage = new createjs.Stage("drawCanvas");
-  var selectedColour = "#fff";
-  var brushIndex = 5;
+  var stageBackground = new createjs.Shape();
+  stage.addChild(stageBackground);
+
+  var selectedColour = "#7bd148";
+  var brushType = "metabrushLines";
+  var brushIndex = 0;
+
 
   var mouse = {
      click: false,
@@ -24548,9 +24560,21 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
       mouse.move = true;
     };
 
-     // get current drawings from server
-     socket.emit("requestDrawHistory");
+    drawBackground();
+
+    // get current drawings from server
+    socket.emit("requestDrawHistory");
   };
+
+  function drawBackground() {
+    stageBackground.x = 0;
+    stageBackground.y = 0;
+    var themeBackingColour = appVars.themes[$scope.themeType].backgroundColour;
+    stageBackground.graphics.beginFill(themeBackingColour)
+      .drawRect(0,0,canvas.width,canvas.height)
+      .endFill();
+    stage.update();
+  }
 
   function getMousePos(canvasObj, evt) {
     var rect = canvasObj.getBoundingClientRect();
@@ -24594,37 +24618,49 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     var colourData = data.colour;
     var line = new createjs.Shape();
 
-    line.graphics.setStrokeStyle(3);
-    line.graphics.beginStroke(colourData);
-    line.graphics.moveTo(lineData[0].x * width, lineData[0].y * height);
-    line.graphics.lineTo(lineData[1].x * width, lineData[1].y * height);
-    line.graphics.endStroke();
-    stage.addChild(line);
+    // (note: brush types will be moved into modules or a service)
 
-    var brushName = 'brush' + brushIndex;
-    var brushStamp = new createjs.Bitmap(AssetLibrary.getBrush(brushName));
+    if(data.brush==="metabrushLines") {
+      line.graphics.setStrokeStyle(3);
+      line.graphics.beginStroke(colourData);
+      line.graphics.moveTo(lineData[0].x * width, lineData[0].y * height);
+      line.graphics.lineTo(lineData[1].x * width, lineData[1].y * height);
+      line.graphics.endStroke();
+      stage.addChild(line);
+    } else {
 
-    brushIndex++;
-    if(brushIndex > 8) brushIndex = 5;
+      if(data.brush==="metabrushGalactic") {
+        if(brushIndex > 3) brushIndex = 0;
+        brushIndex++;
+      } else if (data.brush==="metabrushGeo") {
+        if(brushIndex < 4) brushIndex = 4;
+        if(brushIndex > 7) brushIndex = 4;
+        brushIndex++;
+      }
+      var brushName = 'brush' + brushIndex;
+      console.debug(brushName);
+      var brushStamp = new createjs.Bitmap(AssetLibrary.getBrush(brushName));
 
-    brushStamp.set({
-      x: lineData[1].x * width,
-      y: lineData[1].y * height,
-      scaleX: 0.4,
-      scaleY: 0.4,
-      regX: brushStamp.getBounds().width/2,
-      regY: brushStamp.getBounds().height/2
-    });
+      brushStamp.set({
+        x: lineData[1].x * width,
+        y: lineData[1].y * height,
+        scaleX: 0.4,
+        scaleY: 0.4,
+        regX: brushStamp.getBounds().width/2,
+        regY: brushStamp.getBounds().height/2
+      });
 
-    stage.addChild(brushStamp);
+      stage.addChild(brushStamp);
+
+    }
 
     stage.update();
-
   });
 
   socket.on("refreshPage", function () {
     console.log('refreshing page');
     stage.removeAllChildren();
+    stage.addChild(stageBackground);
     stage.update();
   });
 
@@ -24650,11 +24686,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
   function mainLoop () {
      if (mouse.click && mouse.move && mouse.pos_prev) {
         var linePoints = [ mouse.pos, mouse.pos_prev ];
-        socket.emit('drawElement', { line: linePoints, colour: selectedColour });
+        socket.emit('drawElement', { line: linePoints, colour: selectedColour, brush: $scope.brushType });
         mouse.move = false;
      }
      mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-     setTimeout(mainLoop, 50);
+     setTimeout(mainLoop, 40);
   }
 
   // ---------------------------------------------------
@@ -24665,13 +24701,24 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     socket.emit('refreshPage');
   };
 
+  $scope.changeThemeType = function () {
+    appVars.config.themeType = $scope.themeType;
+    drawBackground();
+  };
+
+  $scope.changeBrushType = function () {
+    console.debug($scope.brushType);
+    appVars.config.brushType = $scope.brushType;
+  };
+
   // *********** begins here ***********
   AssetLibrary.loadAllAssets(function() {
     // start the page after all assets have been loaded
+    // ... hmm, at the moment it is doing an unnecessary reload when you
+    // flip between pages ...
     $scope.initCanvas();
     mainLoop();
   });
-
 
 }]);
 
@@ -24734,30 +24781,35 @@ angular.module('myApp').factory('socket', function ($rootScope) {
 // AssetLibrary loads and contains all external assets (images, etc.)
 angular.module('myApp').factory('AssetLibrary', function () {
   "use strict";
-  
-  var manifest = "data/brushesManifest.json";
 
-  var loadCompleteCallback;
+  var loadCompleteCallback = null;
+  var manifest = "data/brushesManifest.json";
+  console.debug('init asset library');
 
   // Create a LoadQueue instance
   var loadQueue = new createjs.LoadQueue();
 
-  // Listener to the Complete event (when all images are loaded)
+  // Listener to the Complete event (when all files are loaded)
   loadQueue.addEventListener("complete", function() {
-    // start the page after all assets have been loaded
+    // send completion message after all assets have been loaded
     loadCompleteCallback();
   });
 
   loadQueue.addEventListener("error", function() {
-    console.debug('error loading files');
+    console.warning('error loading files');
     return false;
   });
 
   return {
     loadAllAssets: function (callback) {
-      // Start loading assets
       loadCompleteCallback = callback;
-      loadQueue.loadManifest({src: manifest, type: "manifest"});
+      if(true) {
+        // start loading assets
+        loadQueue.loadManifest({src: manifest, type: "manifest"});
+      } else {
+        // assets already loaded so return
+        loadCompleteCallback();
+      }
     },
     getBrush: function (brushName) {
       return loadQueue.getResult(brushName);
