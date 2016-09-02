@@ -1,0 +1,24 @@
+{
+  "path": "images/brushes/",
+  "manifest": [
+    {"src":"brush-M49.png", "id":"brush1"},
+    {"src":"brush-M81.png", "id":"brush2"},
+    {"src":"brush-M109.png", "id":"brush3"},
+    {"src":"brush-NGC4450.png", "id":"brush4"},
+    {"src":"brush-NGC1407.png", "id":"brush5"},
+    {"src":"brush-NGC1566.png", "id":"brush6"},
+    {"src":"brush-NGC3521.png", "id":"brush7"},
+    {"src":"brush-NGC3705.png", "id":"brush8"},
+    {"src":"brush-NGC3115.png", "id":"brush9"},
+    {"src":"brush-NGC3949.png", "id":"brush10"},
+    {"src":"brush-NGC4314.png", "id":"brush11"},
+    {"src":"brush-NGC4608.png", "id":"brush12"},
+    {"src":"brush-NGC4634.png", "id":"brush13"},
+    {"src":"brush-NGC5033.png", "id":"brush14"},
+    {"src":"brush-NGC5775.png", "id":"brush15"},
+    {"src":"brush-sacredGeo-1.png", "id":"brush16"},
+    {"src":"brush-sacredGeo-2.png", "id":"brush17"},
+    {"src":"brush-sacredGeo-3.png", "id":"brush18"},
+    {"src":"brush-sacredGeo-4.png", "id":"brush19"}
+  ]
+}

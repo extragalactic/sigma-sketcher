@@ -9,7 +9,7 @@
 var express = require("express");
 var http = require("http");
 var app = express();
-var settings = require("./../public/serverIP");
+var settings = require("./../dist/serverIP");
 var server = http.createServer(app).listen(settings.SKETCH_SERVER_PORT);
 var io = require("socket.io")(server);
 var fs = require("fs");
@@ -21,7 +21,7 @@ var drawHistory = [];
 var oscServer, oscClient;
 
 // set root folder for Express web server
-app.use(express.static("./../public"));
+app.use(express.static("./../dist"));
 
 // define handlers for all incoming messages
 io.on("connection", function(socket) {
@@ -128,7 +128,7 @@ function getUserNameArray() {
 }
 */
 
-console.log("Starting Sigma Sketcher on http://localhost:3200");
+console.log("Starting Sigma Sketcher server on http://" + settings.SKETCH_SERVER_IP + ":" + settings.SKETCH_SERVER_PORT);
 
 exports.mainApp = app;
 

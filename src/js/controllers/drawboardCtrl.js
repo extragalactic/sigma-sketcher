@@ -138,11 +138,11 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
     } else {
 
       if(data.brush==="metabrushGalactic") {
-        if(brushIndex > 3) brushIndex = 0;
+        if(brushIndex > 14) brushIndex = 0;
         brushIndex++;
       } else if (data.brush==="metabrushGeo") {
-        if(brushIndex < 4) brushIndex = 4;
-        if(brushIndex > 7) brushIndex = 4;
+        if(brushIndex < 16) brushIndex = 16;
+        if(brushIndex > 18) brushIndex = 16;
         brushIndex++;
       }
       var brushName = 'brush' + brushIndex;
