@@ -137,12 +137,17 @@ angular.module('myApp').controller('DrawboardController', ['$scope', '$http', 's
       stage.addChild(line);
     } else {
 
+      // note: this manual index business is temporary...
       if(data.brush==="metabrushGalactic") {
         if(brushIndex > 14) brushIndex = 0;
         brushIndex++;
       } else if (data.brush==="metabrushGeo") {
         if(brushIndex < 16) brushIndex = 16;
         if(brushIndex > 18) brushIndex = 16;
+        brushIndex++;
+      } else if (data.brush==="metabrushFlowers") {
+        if(brushIndex < 19) brushIndex = 19;
+        if(brushIndex > 25) brushIndex = 19;
         brushIndex++;
       }
       var brushName = 'brush' + brushIndex;

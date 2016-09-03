@@ -1,0 +1,42 @@
+.btn-link {
+    color: $primaryColorLight;
+    text-decoration: none;
+
+    &:hover {
+        color: white;
+        text-decoration: none;
+    }
+}
+
+.btn {
+  background: $primaryColorMedium;
+  background-image: -webkit-linear-gradient(top, $primaryColorMedium, $primaryColorDark);
+  background-image: -moz-linear-gradient(top, $primaryColorMedium, $primaryColorDark);
+  background-image: -ms-linear-gradient(top, $primaryColorMedium, $primaryColorDark);
+  background-image: -o-linear-gradient(top, $primaryColorMedium, $primaryColorDark);
+  background-image: linear-gradient(to bottom, $primaryColorMedium, $primaryColorDark);
+  -webkit-border-radius: 12;
+  -moz-border-radius: 12;
+  border-radius: 12px;
+  font-family: 'Raleway', sans-serif;
+  color: white;
+  font-size: 0.7em;
+  padding: 5px 10px 5px 10px;
+  border: solid #c8aed9 1px;
+  text-decoration: none;
+
+  &:focus {
+      color: white;
+  }
+
+  &:hover {
+    background: $primaryColorLight;
+    background-image: -webkit-linear-gradient(top, $primaryColorLight, $primaryColorMedium);
+    background-image: -moz-linear-gradient(top, $primaryColorLight, $primaryColorMedium);
+    background-image: -ms-linear-gradient(top, $primaryColorLight, $primaryColorMedium);
+    background-image: -o-linear-gradient(top, $primaryColorLight, $primaryColorMedium);
+    background-image: linear-gradient(to bottom, $primaryColorLight, $primaryColorMedium);
+    text-decoration: none;
+    color: white;
+  }
+}

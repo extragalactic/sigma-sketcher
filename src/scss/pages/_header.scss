@@ -1,0 +1,11 @@
+
+#navigationBar {
+    li {
+        font-size: 0.7em;
+    }
+}
+
+/* custom navbar class used for skinning the navbar */
+.navbar-custom {
+    background: linear-gradient($backgroundColorLight, $backgroundColorDark);
+}

@@ -1,0 +1,28 @@
+
+#drawCanvas {
+    display: block;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    border: solid $primaryColorDark 3px;
+    border-radius: 12px;
+}
+
+#controlsBar {
+    float: left;
+}
+
+@media (min-width: 992px) {
+    .cornerButtons {
+        padding-top: 25px;
+        float: left;
+    }
+}
+@media (min-width: 480px) and (max-width: 991px) {
+    .cornerButtons {
+        padding-top: 0px;
+        padding-left: 15px;
+        padding-bottom: 10px;
+        float: left;
+    }
+}

@@ -1,0 +1,40 @@
+// Main SCSS file for Sigma Sketcher project
+
+// define site colours
+$primaryColorLight: #ba6fe8;
+$primaryColorMedium: #7d3ca3;
+$primaryColorDark: #3c1c4e;
+$complementaryColorLight: complement($primaryColorLight);
+$textColorLight: #ddd;
+$textColorDark: #777;
+$backgroundColorLight: #444;
+$backgroundColorMedium: #222;
+$backgroundColorDark: #111;
+
+// load all scss files
+@import 'components/colorpicker';
+@import 'base/base';
+@import 'base/buttons';
+@import 'pages/drawboard';
+@import 'pages/header';
+@import 'pages/footer';
+
+
+
+// -----------------------------------------------
+// configuration settings for the Atom text editor
+atom-text-editor {
+  &, &::shadow {
+    atom-text-editor-minimap {
+      display: none;
+    }
+  }
+
+  &.is-focused {
+    &, &::shadow {
+      atom-text-editor-minimap {
+        display: block;
+      }
+    }
+  }
+}

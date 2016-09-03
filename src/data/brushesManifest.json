@@ -19,6 +19,13 @@
     {"src":"brush-sacredGeo-1.png", "id":"brush16"},
     {"src":"brush-sacredGeo-2.png", "id":"brush17"},
     {"src":"brush-sacredGeo-3.png", "id":"brush18"},
-    {"src":"brush-sacredGeo-4.png", "id":"brush19"}
+    {"src":"brush-sacredGeo-4.png", "id":"brush19"},
+    {"src":"brush-flower-1.png", "id":"brush20"},
+    {"src":"brush-flower-2.png", "id":"brush21"},
+    {"src":"brush-flower-3.png", "id":"brush22"},
+    {"src":"brush-flower-4.png", "id":"brush23"},
+    {"src":"brush-flower-5.png", "id":"brush24"},
+    {"src":"brush-flower-6.png", "id":"brush25"},
+    {"src":"brush-flower-7.png", "id":"brush26"}
   ]
 }

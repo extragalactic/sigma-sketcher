@@ -25,10 +25,10 @@ var jsSources = [
   'src/lib/ng-color-picker/color-picker.js'
 ];
 var htmlSources = [
-  'src/*.html'
+  'src/partials/*.html'
 ];
 var scssSources = [
-  'src/scss/*.scss'
+  'src/scss/**/*.scss'
 ];
 // all of the dist folders for deleting
 var distFolders = [
@@ -128,7 +128,7 @@ gulp.task('js', ['jshint'], function() {
   gulp.src(jsSources)
     .pipe(concat('script.js'))
     .pipe(browserify())
-    .pipe(gulp.dest('src/js'));
+    .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('minify', ['js'], function() {
@@ -158,8 +158,11 @@ gulp.task('copyJS', ['minify'], function() {
 });
 
 gulp.task('watch', ['copyJS'], function() {
-  gulp.watch(jsSources, ['jshint', 'js', 'minify', 'copyJS', 'cleanEnd']);  gulp.watch(scssSources, ['sass']);
+  gulp.watch(jsSources, ['jshint', 'js', 'minify', 'copyJS', 'cleanEnd']);
+  gulp.watch(htmlSources, ['copyViews']);
+  gulp.watch(scssSources, ['sass']);
 });
 
+// ------------------------------------------
 //  run tasks
 gulp.task('default', ['clean', 'jshint', 'sass', 'js', 'copyFiles', 'minify', 'copyJS', 'cleanEnd', 'watch']);
