@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     del = require('del'),
     rename = require('gulp-rename'),
     fs = require('fs'),
-    browserify = require('gulp-browserify');
+    browserify = require('gulp-browserify'); // change to just 'browserify'
 
 // list source files
 var jsSources = [
@@ -23,6 +23,7 @@ var jsSources = [
   'src/js/services/assetLibrary.js',
   'src/js/directives/onSizeChanged.js',
   'src/lib/ng-color-picker/color-picker.js'
+//  'src/lib/bootstrap-switch/bootstrap-switch.min.js'
 ];
 var htmlSources = [
   'src/partials/*.html'
@@ -54,6 +55,8 @@ gulp.task('cleanEnd', ['copyJS'], function(done) {
   del.sync(['src/js/script.js', 'src/js/script-min.js']);
   done();
 });
+
+// -----
 
 // copy partials (html) into dist folder
 gulp.task('copyViews', function(done) {
@@ -109,8 +112,8 @@ gulp.task('copyData', function(done) {
 // put all the basic copy procedures into a single task
 gulp.task('copyFiles', ['copyViews', 'copyImages', 'copyLibraries', 'copyHtmlRoot', 'copyServerConfig', 'copyBootstrapCSS', 'copyTemplates', 'copyFonts', 'copyData']);
 
+// -----
 
-// define tasks
 gulp.task('jshint', function() {
   gulp.src(jsSources)
     .pipe(jshint())
@@ -163,6 +166,7 @@ gulp.task('watch', ['copyJS'], function() {
   gulp.watch(scssSources, ['sass']);
 });
 
-// ------------------------------------------
+// -----
+
 //  run tasks
 gulp.task('default', ['clean', 'jshint', 'sass', 'js', 'copyFiles', 'minify', 'copyJS', 'cleanEnd', 'watch']);

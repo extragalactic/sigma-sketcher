@@ -1,5 +1,5 @@
 
-var SKETCH_SERVER_IP = "192.168.1.69";
+var SKETCH_SERVER_IP = "52.10.148.188";
 var SKETCH_SERVER_PORT = 3200;
 
 (function() {

@@ -4,7 +4,7 @@
     background-color: black;
     width: 100%;
     height: 100%;
-    border: solid $primaryColorDark 3px;
+    border: solid $primaryColorDark 5px;
     border-radius: 12px;
 }
 
@@ -12,9 +12,20 @@
     float: left;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .cornerButtons {
         padding-top: 25px;
+        padding-left: 15px;
+        padding-bottom: 5px;
+        float: left;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .cornerButtons {
+        padding-top: 5px;
+        padding-left: 15px;
+        padding-bottom: 10px;
         float: left;
     }
 }

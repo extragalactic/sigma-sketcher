@@ -1,3 +1,4 @@
+// text button link
 .btn-link {
     color: $primaryColorLight;
     text-decoration: none;
@@ -8,6 +9,45 @@
     }
 }
 
+.buttonStyle {
+  display:block;
+  width:120px;
+  height:45px;
+  border-radius:7px;
+  text-align:center;
+  margin:10px auto;
+  font: bold 30px "Arial";
+  font-size: 2.7em;
+  outline: none;
+
+	background: linear-gradient(#A9CA7B,#84AB58);
+  border:1px solid #567A34;
+  color:#49682C;
+  text-shadow:0 1px #B7DB83;
+  box-shadow:
+    inset 0 1px 1px 0 #C5DDA1,
+    0 2px 0 -1px rgba(0,0,0,0.2);
+  cursor:pointer;
+
+  &:hover {
+    background: linear-gradient(#8AA85E,#6D8E49);
+  	border:1px solid #658641;
+  	color:#4B682E;
+  	text-shadow:0 1px #88B058;
+  	box-shadow: 0 2px 0 -1px rgba(0,0,0,0.2);
+  }
+  &:active {
+  	background:linear-gradient(#4C6231,#5E7443);
+  	box-shadow:
+  	  inset 0 0 #4B6133,
+  	  inset 0 2px 9px 1px #394B23;
+  	color:#8DA279;
+  	text-shadow: 0 1px #2C391B;
+  }
+}
+
+
+// standard button
 .btn {
   background: $primaryColorMedium;
   background-image: -webkit-linear-gradient(top, $primaryColorMedium, $primaryColorDark);
@@ -20,13 +60,15 @@
   border-radius: 12px;
   font-family: 'Raleway', sans-serif;
   color: white;
-  font-size: 0.7em;
-  padding: 5px 10px 5px 10px;
+  font-size: 0.9em;
+  padding: 7px 12px 7px 12px;
   border: solid #c8aed9 1px;
   text-decoration: none;
+  outline: none;
 
   &:focus {
       color: white;
+      outline: 0 !important;
   }
 
   &:hover {
@@ -37,6 +79,17 @@
     background-image: -o-linear-gradient(top, $primaryColorLight, $primaryColorMedium);
     background-image: linear-gradient(to bottom, $primaryColorLight, $primaryColorMedium);
     text-decoration: none;
+    outline: none;
     color: white;
   }
+
+  &:active {
+    background: $primaryColorMedium;
+    -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    text-decoration: none;
+    outline: none;
+  }
+
 }
